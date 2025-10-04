@@ -14,7 +14,8 @@ export const corsOptions = {
       'http://localhost:5175',
       'http://localhost:5176',
       'http://localhost:5177',
-      'https://fdreact.onrender.com'
+      'https://fdreact.onrender.com',
+      'https://fdreactt.onrender.com'
     ];
     
     if (allowedOrigins.includes(origin)) {

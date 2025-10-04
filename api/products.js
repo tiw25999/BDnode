@@ -6,13 +6,58 @@ const router = express.Router();
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Missing Supabase environment variables');
+  console.error('SUPABASE_URL:', supabaseUrl ? 'Set' : 'Missing');
+  console.error('SUPABASE_ANON_KEY:', supabaseKey ? 'Set' : 'Missing');
+}
+
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 // @route   GET /api/products
 // @desc    Get all products
 // @access  Public
 router.get('/', async (req, res) => {
   try {
+    // Check if Supabase is available
+    if (!supabase) {
+      console.log('Supabase not available, returning fallback data');
+      return res.json({
+        success: true,
+        data: [
+          {
+            id: '1',
+            name: 'iPhone 15 Pro',
+            description: 'Latest iPhone with advanced features',
+            price: 39900,
+            category: 'มือถือ',
+            brand: 'Apple',
+            image_url: 'https://via.placeholder.com/300x300?text=iPhone+15+Pro',
+            is_active: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: 'Samsung Galaxy S24',
+            description: 'Premium Android smartphone',
+            price: 29900,
+            category: 'มือถือ',
+            brand: 'Samsung',
+            image_url: 'https://via.placeholder.com/300x300?text=Galaxy+S24',
+            is_active: true,
+            created_at: new Date().toISOString()
+          }
+        ],
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: 2,
+          totalPages: 1
+        }
+      });
+    }
+
     const { page = 1, limit = 20, category, search, sort = 'created_at', order = 'desc' } = req.query;
     
     let query = supabase

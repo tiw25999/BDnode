@@ -1,7 +1,31 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 
-const router = express.Router();
+const app = express();
+
+// CORS middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  if (origin && (origin.includes('f-dreact.vercel.app') || origin.includes('localhost'))) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma, X-CSRF-Token');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
+
+app.use(express.json());
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -15,10 +39,8 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
-// @route   GET /api/products
-// @desc    Get all products
-// @access  Public
-router.get('/', async (req, res) => {
+// GET /api/products
+app.get('/', async (req, res) => {
   try {
     // Check if Supabase is available
     if (!supabase) {
@@ -47,12 +69,23 @@ router.get('/', async (req, res) => {
             image_url: 'https://via.placeholder.com/300x300?text=Galaxy+S24',
             is_active: true,
             created_at: new Date().toISOString()
+          },
+          {
+            id: '3',
+            name: 'MacBook Pro M3',
+            description: 'Powerful laptop for professionals',
+            price: 59900,
+            category: 'คอมพิวเตอร์',
+            brand: 'Apple',
+            image_url: 'https://via.placeholder.com/300x300?text=MacBook+Pro',
+            is_active: true,
+            created_at: new Date().toISOString()
           }
         ],
         pagination: {
           page: 1,
           limit: 20,
-          total: 2,
+          total: 3,
           totalPages: 1
         }
       });
@@ -79,7 +112,7 @@ router.get('/', async (req, res) => {
 
     // Apply pagination
     const from = (page - 1) * limit;
-    const to = from + parseInt(limit) - 1;
+    const to = from + limit - 1;
     query = query.range(from, to);
 
     const { data: products, error, count } = await query;
@@ -90,26 +123,29 @@ router.get('/', async (req, res) => {
     }
 
     res.json({
-      products: products || [],
+      success: true,
+      data: products || [],
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
         total: count || 0,
-        pages: Math.ceil((count || 0) / limit)
+        totalPages: Math.ceil((count || 0) / limit)
       }
     });
   } catch (error) {
-    console.error('Get products error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Products error:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
-// @route   GET /api/products/:id
-// @desc    Get single product
-// @access  Public
-router.get('/:id', async (req, res) => {
+// GET /api/products/:id
+app.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!supabase) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     const { data: product, error } = await supabase
       .from('products')
@@ -122,36 +158,14 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    res.json({ product });
+    res.json({
+      success: true,
+      data: product
+    });
   } catch (error) {
-    console.error('Get product error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Product error:', error);
+    res.status(500).json({ error: 'Failed to fetch product' });
   }
 });
 
-// @route   GET /api/products/categories
-// @desc    Get product categories
-// @access  Public
-router.get('/categories', async (req, res) => {
-  try {
-    const { data: categories, error } = await supabase
-      .from('products')
-      .select('category')
-      .eq('is_active', true);
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return res.status(500).json({ error: 'Failed to fetch categories' });
-    }
-
-    // Get unique categories
-    const uniqueCategories = [...new Set(categories.map(item => item.category))];
-    
-    res.json({ categories: uniqueCategories });
-  } catch (error) {
-    console.error('Get categories error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-module.exports = router;
+module.exports = app;

@@ -1,23 +1,29 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/products.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/auth.js": {
+      "runtime": "nodejs18.x"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "source": "/api/products/(.*)",
+      "destination": "/api/products"
     },
     {
-      "src": "/health",
-      "dest": "/api/index.js"
+      "source": "/products/(.*)",
+      "destination": "/api/products"
     },
     {
-      "src": "/",
-      "dest": "/api/index.js"
+      "source": "/api/auth/(.*)",
+      "destination": "/api/auth"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/api/auth"
     }
   ],
   "env": {

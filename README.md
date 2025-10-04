@@ -1,43 +1,31 @@
 # E-Tech Store Backend API
 
-Backend API สำหรับ E-Tech Store e-commerce platform ที่ใช้ Node.js, TypeScript, และ PostgreSQL + Supabase
+A robust, scalable backend API for the E-Tech Store e-commerce platform built with Node.js, Express.js, TypeScript, and Supabase.
 
 ## 🚀 Features
 
-- **Authentication & Authorization** - JWT-based auth with user/admin roles
-- **Product Management** - CRUD operations for products, categories, brands
-- **Shopping Cart** - Add, update, remove cart items
-- **Order Management** - Create orders, track status, order history
-- **User Management** - Profile management, address management
-- **Admin Dashboard** - Statistics, user management, order management
-- **File Upload** - Product images and user avatars
-- **Rate Limiting** - API rate limiting for security
-- **Input Validation** - Request validation using express-validator
-
-## 🛠️ Tech Stack
-
-- **Runtime**: Node.js
-- **Language**: TypeScript
-- **Framework**: Express.js
-- **Database**: PostgreSQL + Supabase
-- **Authentication**: JWT
-- **Validation**: express-validator
-- **Security**: Helmet, CORS, Rate Limiting
-- **File Upload**: Multer
+- **Authentication & Authorization**: JWT-based auth with role-based access control
+- **Product Management**: CRUD operations for products, categories, and brands
+- **Shopping Cart**: Session-based cart management
+- **Order Processing**: Complete order lifecycle management
+- **Admin Dashboard**: Comprehensive admin panel for store management
+- **File Upload**: Image upload and management
+- **Database**: PostgreSQL with Supabase
+- **Security**: CORS, rate limiting, input validation, and security headers
 
 ## 📋 Prerequisites
 
-- Node.js (v18+)
-- npm หรือ yarn
-- Supabase account
+- Node.js (v18 or higher)
+- npm or yarn
+- PostgreSQL database (Supabase recommended)
 - Git
 
-## 🚀 Installation
+## 🛠️ Installation
 
-1. **Clone repository**
+1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd Bnodejs
+   git clone https://github.com/tiw25999/BDnode.git
+   cd BDnode
    ```
 
 2. **Install dependencies**
@@ -45,169 +33,279 @@ Backend API สำหรับ E-Tech Store e-commerce platform ที่ใช�
    npm install
    ```
 
-3. **Setup environment variables**
+3. **Environment Setup**
    ```bash
    cp env.example .env
    ```
    
-   แก้ไขไฟล์ `.env`:
+   Fill in your environment variables in `.env`:
    ```env
-   # Server Configuration
-   PORT=5000
+   PORT=5001
    NODE_ENV=development
-
-   # Supabase Configuration
-   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_URL=your-supabase-url
    SUPABASE_ANON_KEY=your-supabase-anon-key
-   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-
-   # JWT
-   JWT_SECRET=your-super-secret-jwt-key-here
+   JWT_SECRET=your-super-secret-jwt-key
    JWT_EXPIRE=7d
-
-   # File Upload
    UPLOAD_PATH=./uploads
    MAX_FILE_SIZE=5242880
-
-   # CORS
    FRONTEND_URL=http://localhost:3000
-
-   # Rate Limiting
    RATE_LIMIT_WINDOW_MS=900000
    RATE_LIMIT_MAX_REQUESTS=100
    ```
 
-4. **Setup Supabase Database**
-   - สร้าง project ใหม่ใน [Supabase](https://supabase.com)
-   - ไปที่ SQL Editor และรันไฟล์ `database/schema.sql`
-   - Copy URL และ API keys ไปใส่ใน `.env`
+4. **Database Setup**
+   - Create a new Supabase project
+   - Run the SQL schema from `database/schema.sql`
+   - Update your `.env` with Supabase credentials
 
-5. **Run the application**
+5. **Seed Database (Optional)**
    ```bash
-   # Development
-   npm run dev
-
-   # Production
-   npm run build
-   npm start
+   npm run seed
    ```
+
+## 🚀 Running the Application
+
+### Development
+```bash
+npm run dev
+```
+
+### Production
+```bash
+npm run build
+npm start
+```
+
+The API will be available at `http://localhost:5001`
 
 ## 📚 API Documentation
 
 ### Authentication Endpoints
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| POST | `/api/auth/register` | Register new user | Public |
-| POST | `/api/auth/login` | Login user | Public |
-| GET | `/api/auth/me` | Get current user | Private |
-| PUT | `/api/auth/profile` | Update user profile | Private |
+#### Register
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+#### Get Profile
+```http
+GET /api/auth/me
+Authorization: Bearer <token>
+```
+
+#### Update Profile
+```http
+PUT /api/auth/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "phone": "+1234567890"
+}
+```
 
 ### Product Endpoints
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/api/products` | Get all products | Public |
-| GET | `/api/products/:id` | Get single product | Public |
-| POST | `/api/products` | Create product | Admin |
-| PUT | `/api/products/:id` | Update product | Admin |
-| DELETE | `/api/products/:id` | Delete product | Admin |
-| GET | `/api/products/categories` | Get categories | Public |
-| GET | `/api/products/brands` | Get brands | Public |
+#### Get All Products
+```http
+GET /api/products
+```
+
+#### Get Product by ID
+```http
+GET /api/products/:id
+```
+
+#### Get Categories
+```http
+GET /api/products/categories
+```
+
+#### Get Brands
+```http
+GET /api/products/brands
+```
 
 ### Cart Endpoints
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/api/cart` | Get cart items | Private |
-| POST | `/api/cart` | Add item to cart | Private |
-| PUT | `/api/cart/:id` | Update cart item | Private |
-| DELETE | `/api/cart/:id` | Remove cart item | Private |
-| DELETE | `/api/cart` | Clear cart | Private |
+#### Get Cart
+```http
+GET /api/cart
+Authorization: Bearer <token>
+```
+
+#### Add to Cart
+```http
+POST /api/cart/add
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "productId": "product-id",
+  "quantity": 2
+}
+```
+
+#### Update Cart Item
+```http
+PUT /api/cart/update/:itemId
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+```
+
+#### Remove from Cart
+```http
+DELETE /api/cart/remove/:itemId
+Authorization: Bearer <token>
+```
 
 ### Order Endpoints
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/api/orders` | Get user orders | Private |
-| GET | `/api/orders/:id` | Get single order | Private |
-| POST | `/api/orders` | Create order | Private |
-| PUT | `/api/orders/:id/status` | Update order status | Private/Admin |
+#### Create Order
+```http
+POST /api/orders
+Authorization: Bearer <token>
+Content-Type: application/json
 
-### User Endpoints
+{
+  "items": [
+    {
+      "productId": "product-id",
+      "quantity": 2
+    }
+  ],
+  "shippingAddress": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "addressLine": "123 Main St",
+    "subDistrict": "Downtown",
+    "district": "City",
+    "province": "State",
+    "postalCode": "12345",
+    "phone": "+1234567890"
+  },
+  "paymentMethod": "Credit Card"
+}
+```
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/api/users/addresses` | Get user addresses | Private |
-| POST | `/api/users/addresses` | Add address | Private |
-| PUT | `/api/users/addresses/:id` | Update address | Private |
-| DELETE | `/api/users/addresses/:id` | Delete address | Private |
-| PUT | `/api/users/avatar` | Update avatar | Private |
+#### Get User Orders
+```http
+GET /api/orders
+Authorization: Bearer <token>
+```
+
+#### Get Order by ID
+```http
+GET /api/orders/:id
+Authorization: Bearer <token>
+```
 
 ### Admin Endpoints
 
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/api/admin/dashboard` | Get dashboard stats | Admin |
-| GET | `/api/admin/users` | Get all users | Admin |
-| GET | `/api/admin/orders` | Get all orders | Admin |
-| GET | `/api/admin/orders/:id` | Get order details | Admin |
-| PUT | `/api/admin/orders/:id/status` | Update order status | Admin |
-| GET | `/api/admin/reports/sales` | Get sales report | Admin |
-
-## 🔐 Authentication
-
-API ใช้ JWT tokens สำหรับ authentication:
-
-1. **Register/Login** เพื่อรับ token
-2. **Include token** ใน Authorization header:
-   ```
-   Authorization: Bearer <your-jwt-token>
-   ```
-
-## 📊 Database Schema
-
-### Tables
-- `users` - User accounts
-- `user_addresses` - User shipping addresses
-- `products` - Product catalog
-- `categories` - Product categories
-- `brands` - Product brands
-- `cart_items` - Shopping cart items
-- `orders` - Order information
-- `order_items` - Order line items
-
-### Key Features
-- **UUID Primary Keys** - All tables use UUID
-- **Row Level Security** - Supabase RLS policies
-- **Timestamps** - Auto-updating created_at/updated_at
-- **Foreign Key Constraints** - Data integrity
-- **Indexes** - Optimized queries
-
-## 🚀 Deployment
-
-### Supabase Setup
-1. สร้าง project ใน [Supabase](https://supabase.com)
-2. รัน SQL schema ใน SQL Editor
-3. ตั้งค่า RLS policies
-4. Copy connection details
-
-### Environment Variables
-```env
-NODE_ENV=production
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-JWT_SECRET=your-secure-jwt-secret
-FRONTEND_URL=https://your-frontend-domain.com
+#### Get All Users
+```http
+GET /api/admin/users
+Authorization: Bearer <admin-token>
 ```
 
-### Deployment Platforms
-- **Railway** - Easy deployment
-- **Render** - Free tier available
-- **Heroku** - Popular choice
-- **Vercel** - Serverless functions
-- **DigitalOcean** - VPS deployment
+#### Get All Orders
+```http
+GET /api/admin/orders
+Authorization: Bearer <admin-token>
+```
+
+#### Update Order Status
+```http
+PUT /api/admin/orders/:id/status
+Authorization: Bearer <admin-token>
+Content-Type: application/json
+
+{
+  "status": "shipped"
+}
+```
+
+## 🗄️ Database Schema
+
+### Users Table
+- `id` (UUID, Primary Key)
+- `email` (VARCHAR, Unique)
+- `password_hash` (VARCHAR)
+- `first_name` (VARCHAR)
+- `last_name` (VARCHAR)
+- `phone` (VARCHAR)
+- `avatar_url` (TEXT)
+- `addresses` (JSONB)
+- `default_address_index` (INTEGER)
+- `role` (VARCHAR, Default: 'user')
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+### Products Table
+- `id` (UUID, Primary Key)
+- `name` (VARCHAR)
+- `description` (TEXT)
+- `price` (DECIMAL)
+- `category_id` (UUID, Foreign Key)
+- `brand_id` (UUID, Foreign Key)
+- `image_url` (TEXT)
+- `stock_quantity` (INTEGER)
+- `is_active` (BOOLEAN)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+### Orders Table
+- `id` (UUID, Primary Key)
+- `user_id` (UUID, Foreign Key)
+- `status` (VARCHAR)
+- `total_amount` (DECIMAL)
+- `shipping_address` (JSONB)
+- `payment_method` (VARCHAR)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | 5001 |
+| `NODE_ENV` | Environment | development |
+| `SUPABASE_URL` | Supabase project URL | - |
+| `SUPABASE_ANON_KEY` | Supabase anonymous key | - |
+| `JWT_SECRET` | JWT secret key | - |
+| `JWT_EXPIRE` | JWT expiration | 7d |
+| `UPLOAD_PATH` | File upload path | ./uploads |
+| `MAX_FILE_SIZE` | Max file size in bytes | 5242880 |
+| `FRONTEND_URL` | Frontend URL for CORS | http://localhost:3000 |
+| `RATE_LIMIT_WINDOW_MS` | Rate limit window | 900000 |
+| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | 100 |
 
 ## 🧪 Testing
 
@@ -215,76 +313,80 @@ FRONTEND_URL=https://your-frontend-domain.com
 # Run tests
 npm test
 
-# Run with coverage
+# Run tests with coverage
 npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
-## 📝 API Examples
+## 📦 Scripts
 
-### Register User
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "password123",
-    "firstName": "John",
-    "lastName": "Doe"
-  }'
-```
-
-### Get Products
-```bash
-curl -X GET "http://localhost:5000/api/products?page=1&limit=10&category=มือถือ"
-```
-
-### Add to Cart
-```bash
-curl -X POST http://localhost:5000/api/cart \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <token>" \
-  -d '{
-    "productId": "product-uuid",
-    "quantity": 2
-  }'
-```
-
-## 🔧 Development
-
-### Project Structure
-```
-src/
-├── config/          # Database configuration
-├── middleware/      # Custom middleware
-├── routes/          # API routes
-├── server.ts        # Main server file
-└── types/           # TypeScript types
-```
-
-### Scripts
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm start` - Start production server
 - `npm test` - Run tests
+- `npm run seed` - Seed database with sample data
+- `npm run setup` - Setup development environment
+
+## 🚀 Deployment
+
+### Render (Recommended)
+
+1. Connect your GitHub repository to Render
+2. Create a new Web Service
+3. Set build command: `npm install && npm run build`
+4. Set start command: `npm start`
+5. Add environment variables
+6. Deploy!
+
+### Other Platforms
+
+The application can be deployed to any Node.js hosting platform:
+- Heroku
+- Vercel
+- Railway
+- DigitalOcean App Platform
+
+## 🔒 Security Features
+
+- **CORS**: Configurable cross-origin resource sharing
+- **Rate Limiting**: Prevents API abuse
+- **Input Validation**: Comprehensive request validation
+- **JWT Authentication**: Secure token-based authentication
+- **Password Hashing**: bcrypt for password security
+- **Security Headers**: Helmet.js for security headers
+- **File Upload Security**: Validated file uploads
+
+## 📊 Monitoring
+
+- Health check endpoint: `GET /health`
+- Request logging
+- Error tracking
+- Performance monitoring
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-หากมีปัญหาหรือคำถาม:
-- สร้าง Issue ใน GitHub
-- ติดต่อ: suntonrapot.khunchit@gmail.com
+For support, email support@etech.com or create an issue in the repository.
+
+## 🔗 Links
+
+- [Frontend Repository](https://github.com/tiw25999/FDreact)
+- [Live Demo](https://etech-store.onrender.com)
+- [API Documentation](https://etech-backend.onrender.com/api/docs)
 
 ---
 
-Made with ❤️ by E-Tech Team
+**E-Tech Store Backend API** - Built with ❤️ by the E-Tech Team

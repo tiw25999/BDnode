@@ -58,7 +58,7 @@ router.post('/register', [
         phone: phone || null,
         role: 'user'
       })
-      .select('id, email, first_name, last_name, phone, role')
+      .select('id, email, first_name, last_name, phone, avatar_url, role')
       .single();
 
     if (error) {
@@ -77,6 +77,7 @@ router.post('/register', [
         firstName: user.first_name,
         lastName: user.last_name,
         phone: user.phone,
+        avatarUrl: user.avatar_url,
         role: user.role
       }
     });
@@ -104,7 +105,7 @@ router.post('/login', [
     // Get user with password
     const { data: user, error } = await supabaseAdmin
       .from('users')
-      .select('id, email, password_hash, first_name, last_name, phone, role')
+      .select('id, email, password_hash, first_name, last_name, phone, avatar_url, role')
       .eq('email', email)
       .single();
 
@@ -138,6 +139,7 @@ router.post('/login', [
         firstName: user.first_name,
         lastName: user.last_name,
         phone: user.phone,
+        avatarUrl: user.avatar_url,
         role: user.role
       }
     });

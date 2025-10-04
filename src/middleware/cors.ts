@@ -14,10 +14,15 @@ export const corsOptions = {
       'http://localhost:5175',
       'http://localhost:5176',
       'http://localhost:5177',
-      'https://fdreact.onrender.com'
+      'https://fdreact.onrender.com',
+      'https://etech-frontend.onrender.com',
+      'https://etech-store.onrender.com'
     ];
     
-    if (allowedOrigins.includes(origin)) {
+    // Allow all Render domains
+    const isRenderDomain = origin.endsWith('.onrender.com');
+    
+    if (allowedOrigins.includes(origin) || isRenderDomain) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

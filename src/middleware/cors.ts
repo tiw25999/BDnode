@@ -14,6 +14,7 @@ export const corsOptions = {
       'http://localhost:5175',
       'http://localhost:5176',
       'http://localhost:5177',
+      'https://f-dreact.vercel.app/',
       'https://f-dreact.vercel.app',
       'https://fdreactt.onrender.com',
       'https://*.vercel.app',

@@ -4,16 +4,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Production builds
+dist/
+build/
+
 # Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Build output
-dist/
-build/
 
 # Logs
 logs
@@ -25,17 +25,18 @@ pids
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Coverage directory
 coverage/
-
-# nyc test coverage
-.nyc_output
+*.lcov
 
 # Dependency directories
 jspm_packages/
 
 # Optional npm cache directory
 .npm
+
+# Optional eslint cache
+.eslintcache
 
 # Optional REPL history
 .node_repl_history
@@ -49,7 +50,7 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
-# parcel-bundler cache (https://parceljs.org/)
+# parcel-bundler cache
 .cache
 .parcel-cache
 
@@ -74,12 +75,60 @@ jspm_packages/
 # TernJS port file
 .tern-port
 
-# IDE
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+
+# Uploads directory
+uploads/
+
+# Database files
+*.sqlite
+*.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Test files
+tests/
+test/
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Migration scripts (not needed for Vercel)
+scripts/
+migrations/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Other deployment configs
+render.yaml
+railway.toml
+Procfile
+
+# Package lock (will be regenerated)
+package-lock.json

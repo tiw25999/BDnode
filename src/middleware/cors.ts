@@ -14,11 +14,22 @@ export const corsOptions = {
       'http://localhost:5175',
       'http://localhost:5176',
       'http://localhost:5177',
-      'https://fdreact.onrender.com',
-      'https://fdreactt.onrender.com'
+      'https://f-dreact.vercel.app',
+      'https://fdreactt.onrender.com',
+      'https://*.vercel.app',
+      'https://*.netlify.app'
     ];
     
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin matches any allowed pattern
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin.includes('*')) {
+        const pattern = allowedOrigin.replace('*', '.*');
+        return new RegExp(pattern).test(origin);
+      }
+      return allowedOrigin === origin;
+    });
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
